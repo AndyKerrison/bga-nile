@@ -56,6 +56,7 @@ function (dojo, declare) {
             this.resources.hand = _("Hand");
             this.resources.storage = _("Storage");
             this.resources.pass = _("Pass");
+			this.resources.back = _("Back");
             this.resources.market = _("Market");
             this.resources.makeOffering = _("Make Offering");
             this.resources.plant = _("Plant");
@@ -292,6 +293,7 @@ function (dojo, declare) {
                         break;
 
                     case 'playerPlantOrSpeculate':
+						this.addActionButton('back', this.resources.back, 'onBack');
                         this.addActionButton('plant', this.resources.plant, 'onPlant');
                         this.addActionButton('speculate', this.resources.speculate, 'onSpeculate');
                         this.addActionButton('pass', this.resources.pass, 'onPass');
@@ -477,6 +479,26 @@ function (dojo, declare) {
             }
 
             this.ajaxcall("/aknile/aknile/pass.html",
+                { lock: true, },
+                this,
+                function (result) { },
+                function (is_error) { }
+                );
+        },
+		
+		onBack: function( evt )
+        {
+            console.log( 'back' );
+            
+            // Preventing default browser reaction
+            dojo.stopEvent( evt );
+
+            // Check that this action is possible (see "possibleactions" in states.inc.php)
+            if (! this.checkAction('back')) {
+                return;
+            }
+
+            this.ajaxcall("/aknile/aknile/back.html",
                 { lock: true, },
                 this,
                 function (result) { },

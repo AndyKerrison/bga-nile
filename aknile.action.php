@@ -69,6 +69,13 @@
 		$this->game->pass();
 		self::ajaxResponse();    
 	}
+	
+	public function back()
+    {
+		self::setAjaxMode();     
+		$this->game->back();
+		self::ajaxResponse();    
+	}
 
     public function market()
     {

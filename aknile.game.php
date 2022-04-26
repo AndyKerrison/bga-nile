@@ -495,6 +495,13 @@ class aknile extends Table
 
         $this->gamestate->nextState( 'pass' );
     }
+	
+	function back()
+    {
+        self::checkAction( "back" );
+
+        $this->gamestate->nextState( 'back' );
+    }
 
     function market($card_ids)
     {

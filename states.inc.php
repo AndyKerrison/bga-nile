@@ -114,8 +114,8 @@ $machinestates = array(
         "description" => clienttranslate('${actplayer} must plant or speculate'),
         "descriptionmyturn" => clienttranslate('${you} must plant or speculate'),
         "type" => "activeplayer",
-        "possibleactions" => array( "plant", "speculate", "pass", "zombiePass" ),
-        "transitions" => array( "plant" => 20, "speculate" => 20, "pass" => 20, "zombiePass" => 20 )
+        "possibleactions" => array( "back", "plant", "speculate", "pass", "zombiePass" ),
+        "transitions" => array( "back" => 10, "plant" => 20, "speculate" => 20, "pass" => 20, "zombiePass" => 20 )
     ),
 
     20 => array(
