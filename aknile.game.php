@@ -900,12 +900,7 @@ class aknile extends Table
                 {
                     $this->gamestate->nextState( 'gameEnd' );
                     return;
-                }
-                if (self::getGameStateValue("plagueTrigger") == 1)
-                {
-                    $this->gamestate->nextState( 'plague' );
-                    return;
-                }
+                }                
             }
         }
 
@@ -938,6 +933,12 @@ class aknile extends Table
                     'cards' => $cardsToDiscard,
                 ) );
             }
+        }
+		
+		if (self::getGameStateValue("plagueTrigger") == 1)
+        {
+            $this->gamestate->nextState( 'speculationPlague' );
+            return;
         }
 
         //next state
