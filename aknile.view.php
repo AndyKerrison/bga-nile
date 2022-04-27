@@ -77,8 +77,28 @@
         */
 
         $this->page->begin_block( "aknile_aknile", "field" );
-        $this->page->begin_block( "aknile_aknile", "opponent" );
+        $this->page->begin_block( "aknile_aknile", "opponent" );	
+		
+		global $g_user;
+		$current_player_id = $g_user->get_id();		
+		
+		//loop until current player is at the front, if not found then keep original order
+		$count = 0;		
+		while($count < count($players))
+		{
+			$front = reset($players);
+			if ($front['player_id'] == $current_player_id)
+			{
+				break;
+			}
+			
+			$first = array_shift($players);
+			array_push($players, $first);
+			$count++;			
+		}
+			
 		foreach( $players as $player )	{
+						
             // Important: nested block must be reset here, otherwise the second player miniboard will
             //  have 8 card_place, the third will have 12 card_place, and so one...
             $this->page->reset_subblocks( 'field' );
@@ -93,7 +113,7 @@
 
             $this->page->insert_block( "opponent", array( "PLAYER_ID" => $player['player_id'],
 			                                            "PLAYER_NAME" => $player['player_name']
-                                                      ));
+                                                      ));			
 		}
 
         /*********** Do not change anything below this line  ************/
