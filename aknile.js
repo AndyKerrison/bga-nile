@@ -56,15 +56,16 @@ function (dojo, declare) {
             this.resources.hand = _("Hand");
             this.resources.storage = _("Storage");
             this.resources.pass = _("Pass");
+			this.resources.passContinue = _("Continue");
 			this.resources.back = _("Back");
             this.resources.market = _("Market");
-            this.resources.makeOffering = _("Make Offering");
+            this.resources.makeOffering = _("Offering");
             this.resources.plant = _("Plant");
             this.resources.speculate = _("Speculate");
             this.resources.offeringError = _("Exactly two cards must be discarded to make an offering to Hapi");
             this.resources.marketError = _("Exactly two cards must be discarded to use the market");
-            this.resources.shufflesRemaining = _("Reshuffles: ");
-            this.resources.cardsRemaining = _("Cards: ");
+            this.resources.shufflesRemaining = _("Reshuffles:");
+            this.resources.cardsRemaining = _("Cards:");
             this.resources.noCardError = _("You have not selected any cards");
             this.resources.speculationError = _("Only speculation cards can be used to Speculate");
             this.resources.speculationFloodError = _("Cannot speculate on a crop type that is flooded");
@@ -289,7 +290,7 @@ function (dojo, declare) {
                     case 'playerTrade':
                         this.addActionButton('offering', this.resources.makeOffering, 'onOffering');
                         this.addActionButton('market', this.resources.market, 'onMarket');
-                        this.addActionButton('pass', this.resources.pass, 'onPass');
+                        this.addActionButton('pass', this.resources.passContinue, 'onPass');
                         break;
 
                     case 'playerPlantOrSpeculate':
