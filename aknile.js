@@ -62,6 +62,7 @@ function (dojo, declare) {
             this.resources.makeOffering = _("Offering");
             this.resources.plant = _("Plant");
             this.resources.speculate = _("Speculate");
+			this.resources.plantSpeculate = _("Plant/Speculate");
             this.resources.offeringError = _("Exactly two cards must be discarded to make an offering to Hapi");
             this.resources.marketError = _("Exactly two cards must be discarded to use the market");
             this.resources.shufflesRemaining = _("Reshuffles:");
@@ -314,8 +315,7 @@ function (dojo, declare) {
 
                     case 'playerPlantOrSpeculate':
 						this.addActionButton('back', this.resources.back, 'onBack');
-                        this.addActionButton('plant', this.resources.plant, 'onPlant');
-                        this.addActionButton('speculate', this.resources.speculate, 'onSpeculate');
+						this.addActionButton('plantSpeculate', this.resources.plantSpeculate, 'onPlantSpeculate');
                         this.addActionButton('pass', this.resources.pass, 'onPass');
                         break;
                 }
@@ -610,6 +610,55 @@ function (dojo, declare) {
                 function (is_error) { }
                 );
         },
+		
+		onPlantSpeculate: function (evt) {
+			console.log('plant/speculate');
+			
+			// Preventing default browser reaction
+            dojo.stopEvent(evt);
+			
+			//error if this action is not allowed
+			if (!this.checkAction('plant') && !this.checkAction('speculate')) {
+                return;
+            }
+			
+			//error if no cards selected
+			var cards = this.playerHand.getSelectedItems();
+            if (cards.length == 0) {
+                this.showMessage(this.resources.noCardError, 'error');
+                return;
+            }
+			
+			var specCount = 0;
+			var plantCount = 0;
+			for (var i = 0; i < cards.length; i++) {
+                var cardType = parseInt(cards[i].type);
+                if (this.speculationTypes.indexOf(cardType) >= 0) {
+                    specCount++;                    
+                }
+				else
+				{
+					plantCount++;
+				}                
+            }
+			
+			if (specCount > 0 && plantCount > 0)
+			{
+				this.showMessage(this.resources.plantSpeculationError, 'error');
+				return;
+			}			
+			
+			//refactor has resulted in inefficient merging of split code for these two paths, but safer not to edit
+			if (specCount >0)
+			{
+				this.onSpeculate(evt);
+			}		
+			else
+			{
+				this.onPlant(evt);
+			}			 
+			
+		},
 
         onPlant: function (evt) {
             console.log('plant');
