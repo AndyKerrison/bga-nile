@@ -94,7 +94,16 @@ function (dojo, declare) {
                 var player = gamedatas.players[player_id];
                          
                 // Setting up players boards if needed
-            }
+				if (gamedatas.optionShowCardCount)
+				{
+					var player_board_div = $('player_board_' + player_id);
+                				
+					dojo.place(
+						this.format_block('jstpl_player_icons', {
+							player_id: player_id
+						}), player_board_div);
+				}
+			}
             
             // Set up your game interface here, according to "gamedatas"
 
@@ -190,6 +199,16 @@ function (dojo, declare) {
 
             console.log("fields:");
             console.log(this.gamedatas.fields);
+			
+			//OPTION! Card counts
+			if (gamedatas.optionShowCardCount)
+			{
+				console.log("Card Counts");        
+				console.log(this.gamedatas.cardCounts);			
+				for (var playerId in this.gamedatas.cardCounts) {				
+					$('cardCount_'+playerId).innerHTML = this.gamedatas.cardCounts[playerId];                
+				}
+			}
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -825,6 +844,9 @@ function (dojo, declare) {
 
             dojo.subscribe('tableWindow', this, "notif_finalScore");
             this.notifqueue.setSynchronous('tableWindow', 3000);
+			
+			dojo.subscribe('setCardCount', this, "notif_setCardCount");
+            this.notifqueue.setSynchronous('tableWindow', 100);
         },
 
         // from this point and below, you can write your game notifications handling methods
@@ -843,6 +865,12 @@ function (dojo, declare) {
         },    
         
         */
+		
+		notif_setCardCount: function (notif) {            
+            console.log(notif);
+			
+			$('cardCount_'+notif.args.player_id).innerHTML = notif.args.count;
+        },
 
         notif_finalScore: function (notif) {
             console.log('**** Notification : finalScore');

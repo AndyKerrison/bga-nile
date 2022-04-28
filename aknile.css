@@ -162,6 +162,19 @@ div {
     margin-bottom: 0px;
 }
 
+.cardsInHand {
+    background-image: url(img/cardBack.png);
+    height: 21px;
+    width: 15px;
+    float: left;
+    z-index: 100;
+	margin-right: 4px;
+}
+
+.cardCount {
+	padding-top: 2px;
+}
+
 
 
 

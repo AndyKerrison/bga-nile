@@ -74,6 +74,7 @@ var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${id}"></di
 */
 
 var jstpl_cardontable = '<div class="card" id="card_${card_id}" style="position:absolute; height: ${height}px; width: ${width}px; background-position:-${x}px -${y}px;z-index:${z};"></div>';
+var jstpl_player_icons = '<div class="cardsInHand"></div><div class="cardCount" id="cardCount_${player_id}">X</div>';
 
 </script>  
 

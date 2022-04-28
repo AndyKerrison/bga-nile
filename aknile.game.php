@@ -41,7 +41,7 @@ class aknile extends Table
                 "plagueTrigger" => 15,
             //    "my_second_global_variable" => 11,
             //      ...
-            //    "my_first_game_variant" => 100,
+                "showCountOfCardsInHand" => 100,
             //    "my_second_game_variant" => 101,
             //      ...
         ) );
@@ -193,6 +193,7 @@ class aknile extends Table
         $result['floodType'] = self::getGameStateValue( 'floodType');
         $result['floodCardId'] = self::getGameStateValue( 'floodCardId');
         $result['cardTypeCount'] = count($this->card_types);
+		$result['optionShowCardCount'] = $this->isOptionShowCardCount();
         
         //is the plague card still in the deck
         $cards = $this->cards->getCardsOfType( 16);
@@ -205,6 +206,16 @@ class aknile extends Table
         {
             $result['fields'][$player_id] = $this->cards->getCardsInLocation( 'field', $player_id );
         }      
+		
+		//OPTION! Card count of each player
+		if ($this->isOptionShowCardCount())
+		{
+			$result['cardCounts'] = array();        
+			foreach( $players as $player_id => $player )
+			{
+				$result['cardCounts'][$player_id] = $this->cards->countCardsInLocation( 'hand', $player_id );
+			}    
+		}  		
 
         //tell the client which card type IDs are speculation cards, so it can validate player choices.
         $result['speculationTypes'] = array();
@@ -268,6 +279,10 @@ class aknile extends Table
     /*
         In this space, you can put any utility methods useful for your game logic
     */
+	
+	public function isOptionShowCardCount() {
+		return self::getGameStateValue('showCountOfCardsInHand') == 2;
+	}
 
     function getCardIds($cards)
     {
@@ -327,6 +342,14 @@ class aknile extends Table
 
         //notify this player so the cards can be removed from screen
         self::notifyPlayer( $active_player, "removeCards", "", array( "cards" => $card_ids ) );
+		
+		if ($this->isOptionShowCardCount())
+		{
+			self::notifyAllPlayers( "setCardCount", "", array(
+				'player_id' => $active_player,
+				'count' => $this->cards->countCardsInLocation( 'hand', $active_player)
+			)); 
+		}
     }
 
     function drawCardsWithGameOverCheck($numCards, $source, $destination, $dest_type, $isPlayerDraw)
@@ -352,7 +375,16 @@ class aknile extends Table
                 ) );
 
                 //notify this player so the cards can be added to their hand
-                self::notifyPlayer( $players[$dest_type]['player_id'], "drawCards", "", array( "cards" => $newCards ) );
+                self::notifyPlayer( $players[$dest_type]['player_id'], "drawCards", "", array( "cards" => $newCards ) );				
+				
+				//if card count notification is on, notify everyone of the hand size change
+				if ($this->isOptionShowCardCount())
+				{
+					self::notifyAllPlayers( "setCardCount", "", array(
+						'player_id' => $players[$dest_type]['player_id'],
+						'count' => $this->cards->countCardsInLocation( 'hand', $players[$dest_type]['player_id'] )
+					)); 
+				}
             }
             //update return card list and card to draw count.
             $numCards -= count($newCards);
@@ -545,7 +577,7 @@ class aknile extends Table
         ) );
 
         //move the cards
-        $this->discardCards($card_ids);
+        $this->discardCards($card_ids);		
         
         $this->gamestate->nextState( 'offering' );
     }
@@ -710,7 +742,7 @@ class aknile extends Table
 
                         $cardIdsToDiscard = $this->getCardIds($cards);
 
-                        $this->cards->moveCards( $cardIdsToDiscard, "discard");                    
+                        $this->cards->moveCards( $cardIdsToDiscard, "discard"); 
                     }
                 }
             }
@@ -718,6 +750,15 @@ class aknile extends Table
 
         //update moved cards
         $this->cards->moveCards( $card_ids, "field", self::getActivePlayerId());
+		
+		//if card count notification is on, notify everyone of the hand size change
+		if ($this->isOptionShowCardCount())
+		{
+			self::notifyAllPlayers( "setCardCount", "", array(
+				'player_id' => self::getActivePlayerId(),
+				'count' => $this->cards->countCardsInLocation( 'hand', self::getActivePlayerId() )
+			)); 
+		}
         
         $this->gamestate->nextState( 'plant' );
     }
@@ -763,6 +804,15 @@ class aknile extends Table
                 'player_name' => self::getActivePlayerName()
             ) );
         }
+		
+		//if card count notification is on, notify everyone of the hand size change
+		if ($this->isOptionShowCardCount())
+		{
+			self::notifyAllPlayers( "setCardCount", "", array(
+				'player_id' => self::getActivePlayerId(),
+				'count' => $this->cards->countCardsInLocation( 'hand', self::getActivePlayerId() )
+			)); 
+		}
 
         $this->gamestate->nextState( 'speculate' );
     }

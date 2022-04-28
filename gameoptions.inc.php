@@ -26,8 +26,26 @@
 
 $game_options = array(
 
+	100 => array(
+                'name' => totranslate('Show count of cards in hand'),    
+                'values' => array(
+
+                            // A simple value for this option:
+                            1 => array( 'name' => totranslate('False (default)') ),
+
+                            // A simple value for this option.
+                            // If this value is chosen, the value of "tmdisplay" is displayed in the game lobby
+                            2 => array( 'name' => totranslate('True'), 'tmdisplay' => totranslate('Show count of cards in hand') )
+                        )
+            )
+
     /* Example of game variant:
-    
+                               // A simple value for this option:
+                            1 => array( 'name' => totranslate('No (default)') ),
+
+                            // A simple value for this option.
+                            // If this value is chosen, the value of "tmdisplay" is displayed in the game lobby
+                            2 => array( 'name' => totranslate('Yes'), 'tmdisplay' => totranslate('No Rain Cards') ),
     
     // note: game variant ID should start at 100 (ie: 100, 101, 102, ...). The maximum is 199.
     100 => array(
