@@ -65,7 +65,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stFlood",
         "updateGameProgression" => true,
-        "transitions" => array( "plague" => 3, "speculationPlague" => 4, "harvest" => 5, "gameEnd" => 90 ) //game ends if cards are exhausted
+        "transitions" => array( "plague" => 3, "speculationPlague" => 4, "harvest" => 5, "gameEnd" => 90 ) //end game if no cards to draw
     ),
 
     3 => array(
@@ -73,7 +73,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stPlague",
         "updateGameProgression" => true,
-        "transitions" => array("" => 2) //go back to flood afterwards
+        "transitions" => array("" => 2)
     ),
 	
 	4 => array(
@@ -89,7 +89,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stHarvest",
         "updateGameProgression" => true,
-        "transitions" => array( "" => 10 )
+        "transitions" => array( "playerTrade" => 10, "gameEnd" => 90 ) //game ends if flood drew last card
     ),
 
     10 => array(

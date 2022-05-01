@@ -431,13 +431,13 @@ class aknile extends Table
                 if (self::getGameStateValue("iterations") == count($players)-1)
                 {
                     //game over!
-                    self::notifyAllPlayers( "reshuffle", clienttranslate( 'The deck has been exhausted. The game ends' ), array(
+                    self::notifyAllPlayers( "reshuffle", clienttranslate( 'The deck has been exhausted. The game ends after this phase' ), array(
                         'cardsRemaining' => 0,
                         'shufflesRemaining' => 0
                     ) );
 
                     self::setGameStateValue("gameOverTrigger", 1);
-                    return;
+                    return $returnCards;
                 }
                 else
                 {
@@ -874,12 +874,14 @@ class aknile extends Table
         self::debug("cards left in deck : ".$this->cards->countCardInLocation('deck'));
 
         $newCards = $this->drawCardsWithGameOverCheck(1, 'deck', 'flood', 0, false);
-        if (self::getGameStateValue("gameOverTrigger") == 1)
+		
+		if (count($newCards) == 0)
         {
-            $this->gamestate->nextState('gameEnd');
+            $this->gamestate->nextState( 'gameEnd' );
             return;
         }
-        else if (self::getGameStateValue("plagueTrigger") == 1)
+
+		if (self::getGameStateValue("plagueTrigger") == 1)
         {
             $this->gamestate->nextState( 'plague' );
             return;
@@ -1045,9 +1047,15 @@ class aknile extends Table
                 'resourcename' => $this->card_types[$floodType]["name"],
             ) );
         }
+		
+		if (self::getGameStateValue("gameOverTrigger") == 1)
+        {
+            $this->gamestate->nextState('gameEnd');
+            return;
+        }
         
         //next state
-        $this->gamestate->nextState('');
+        $this->gamestate->nextState('playerTrade');
     }
 
     function stPlague()
@@ -1102,7 +1110,7 @@ class aknile extends Table
         }
 
         self::notifyAllPlayers( "plagueEnd", "", array() );
-
+		
         $this->gamestate->nextState('');
     }
 
